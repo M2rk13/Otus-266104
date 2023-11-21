@@ -1,0 +1,28 @@
+{
+    "name": "m2rk13/otus-266104",
+    "description": "Architecture education project",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1",
+        "ext-bcmath": "*",
+        "symfony/var-dumper": "^6.3",
+        "analog/analog": "^1.0",
+        "php-ds/php-ds": "^1.4"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest"
+        ,
+        "phpunit/phpunit": "^10.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Tests\\": "tests/"
+        }
+    }
+}
