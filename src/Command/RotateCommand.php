@@ -16,7 +16,7 @@ class RotateCommand implements CommandInterface
         $this->rotatable = $rotatable;
     }
 
-    public function __invoke(): void
+    public function execute(): void
     {
         $this->rotatable->setAngular(Direction::plus(
             $this->rotatable->getAngular(),

@@ -35,7 +35,7 @@ class RepositionMovableTest extends TestCase
         $movableShip = new MovableAdapter($ship);
 
         $moveCommand = new MoveCommand($movableShip);
-        $moveCommand();
+        $moveCommand->execute();
 
         /** @var Coordinates $newCoordinates */
         $newCoordinates = $ship->getProperty(RepositionPropertyEnum::POSITION);
@@ -109,7 +109,7 @@ class RepositionMovableTest extends TestCase
 
         $movableShip = new MovableAdapter($object);
         $moveCommand = new MoveCommand($movableShip);
-        $moveCommand();
+        $moveCommand->execute();
     }
 
     public static function moveErrorsProvider(): array
