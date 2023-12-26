@@ -15,7 +15,7 @@ class MoveCommand implements CommandInterface
         $this->movable = $movable;
     }
 
-    public function __invoke(): void
+    public function execute(): void
     {
         $velocity = $this->movable->getVelocity();
         $position = $this->movable->getPosition();

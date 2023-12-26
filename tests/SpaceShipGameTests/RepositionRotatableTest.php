@@ -27,7 +27,7 @@ class RepositionRotatableTest extends TestCase
         $rotatableShip = new RotatableAdapter($ship);
 
         $rotateCommand = new RotateCommand($rotatableShip);
-        $rotateCommand();
+        $rotateCommand->execute();
 
         self::assertSame($expectedValue, $ship->getProperty(RepositionPropertyEnum::ANGULAR_POSITION));
     }
@@ -74,7 +74,7 @@ class RepositionRotatableTest extends TestCase
 
         $rotatableShip = new RotatableAdapter($ship);
         $rotateCommand = new RotateCommand($rotatableShip);
-        $rotateCommand();
+        $rotateCommand->execute();
     }
 
     public static function rotateErrorsProvider(): array
