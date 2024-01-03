@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\SpaceShipGameTests;
 
 use App\Command\RotateCommand;
-use App\Enum\RepositionPropertyEnum;
+use App\Enum\SpaceObjectPropertyEnum;
 use App\Exception\PropertyNotFoundException;
 use App\Reposition\RotatableAdapter;
 use App\SpaceObjects\Ship\DefaultShip;
@@ -21,15 +21,15 @@ class RepositionRotatableTest extends TestCase
     public function testRotate(float $startAngular, float $rotateAngular, float $expectedValue): void
     {
         $ship = new DefaultShip();
-        $ship->setProperty(RepositionPropertyEnum::ANGULAR_POSITION, $startAngular);
-        $ship->setProperty(RepositionPropertyEnum::ANGULAR_CHANGE, $rotateAngular);
+        $ship->setProperty(SpaceObjectPropertyEnum::ANGULAR_POSITION, $startAngular);
+        $ship->setProperty(SpaceObjectPropertyEnum::ANGULAR_CHANGE, $rotateAngular);
 
         $rotatableShip = new RotatableAdapter($ship);
 
         $rotateCommand = new RotateCommand($rotatableShip);
         $rotateCommand->execute();
 
-        self::assertSame($expectedValue, $ship->getProperty(RepositionPropertyEnum::ANGULAR_POSITION));
+        self::assertSame($expectedValue, $ship->getProperty(SpaceObjectPropertyEnum::ANGULAR_POSITION));
     }
 
     public static function rotateDataProvider(): array
@@ -64,12 +64,12 @@ class RepositionRotatableTest extends TestCase
         $ship = new $object();
 
         if ($startAngular !== null) {
-            $ship->setProperty(RepositionPropertyEnum::ANGULAR_POSITION, $startAngular);
+            $ship->setProperty(SpaceObjectPropertyEnum::ANGULAR_POSITION, $startAngular);
         }
 
 
         if ($rotateAngular !== null) {
-            $ship->setProperty(RepositionPropertyEnum::ANGULAR_CHANGE, $rotateAngular);
+            $ship->setProperty(SpaceObjectPropertyEnum::ANGULAR_CHANGE, $rotateAngular);
         }
 
         $rotatableShip = new RotatableAdapter($ship);

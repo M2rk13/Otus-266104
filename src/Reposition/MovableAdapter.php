@@ -4,31 +4,28 @@ declare(strict_types=1);
 
 namespace App\Reposition;
 
-use App\Enum\RepositionPropertyEnum;
+use App\Enum\SpaceObjectPropertyEnum;
 use App\SpaceObjects\SpaceObjectInterface;
 
 class MovableAdapter implements MovableInterface
 {
-    private SpaceObjectInterface $object;
-
     public function __construct(
-        SpaceObjectInterface $object,
+        protected readonly SpaceObjectInterface $object,
     ) {
-        $this->object = $object;
     }
 
     public function getPosition(): Coordinates
     {
-        return $this->object->getProperty(RepositionPropertyEnum::POSITION);
+        return $this->object->getProperty(SpaceObjectPropertyEnum::POSITION);
     }
 
     public function getVelocity(): Coordinates
     {
-        return $this->object->getProperty(RepositionPropertyEnum::VELOCITY);
+        return $this->object->getProperty(SpaceObjectPropertyEnum::VELOCITY);
     }
 
     public function setPosition(Coordinates $newVector): void
     {
-        $this->object->setProperty(RepositionPropertyEnum::POSITION, $newVector);
+        $this->object->setProperty(SpaceObjectPropertyEnum::POSITION, $newVector);
     }
 }
