@@ -15,7 +15,7 @@ abstract class SpaceObject implements SpaceObjectInterface
      */
     public function getProperty(string $key)
     {
-        if (isset($this->properties[$key]) === false) {
+        if ($this->isPropertySet($key) === false) {
             throw new PropertyNotFoundException($key);
         }
 
@@ -25,5 +25,10 @@ abstract class SpaceObject implements SpaceObjectInterface
     public function setProperty(string $key, $newValue): void
     {
         $this->properties[$key] = $newValue;
+    }
+
+    public function isPropertySet(string $key): bool
+    {
+        return isset($this->properties[$key]);
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\SpaceShipGameTests;
 
 use App\Command\MoveCommand;
-use App\Enum\RepositionPropertyEnum;
+use App\Enum\SpaceObjectPropertyEnum;
 use App\Exception\PropertyNotFoundException;
 use App\Reposition\Coordinates;
 use App\Reposition\MovableAdapter;
@@ -27,10 +27,10 @@ class RepositionMovableTest extends TestCase
         $ship = new DefaultShip();
 
         $position = new Coordinates(...$coordinates);
-        $ship->setProperty(RepositionPropertyEnum::POSITION, $position);
+        $ship->setProperty(SpaceObjectPropertyEnum::POSITION, $position);
 
         $velocity = new Coordinates(...$vector);
-        $ship->setProperty(RepositionPropertyEnum::VELOCITY, $velocity);
+        $ship->setProperty(SpaceObjectPropertyEnum::VELOCITY, $velocity);
 
         $movableShip = new MovableAdapter($ship);
 
@@ -38,7 +38,7 @@ class RepositionMovableTest extends TestCase
         $moveCommand->execute();
 
         /** @var Coordinates $newCoordinates */
-        $newCoordinates = $ship->getProperty(RepositionPropertyEnum::POSITION);
+        $newCoordinates = $ship->getProperty(SpaceObjectPropertyEnum::POSITION);
 
         $coordinatesThief = new SweetsThief($newCoordinates);
 
@@ -99,12 +99,12 @@ class RepositionMovableTest extends TestCase
 
         if (empty($coordinates) === false) {
             $position = new Coordinates(...$coordinates);
-            $object->setProperty(RepositionPropertyEnum::POSITION, $position);
+            $object->setProperty(SpaceObjectPropertyEnum::POSITION, $position);
         }
 
         if (empty($vector) === false) {
             $velocity = new Coordinates(...$vector);
-            $object->setProperty(RepositionPropertyEnum::VELOCITY, $velocity);
+            $object->setProperty(SpaceObjectPropertyEnum::VELOCITY, $velocity);
         }
 
         $movableShip = new MovableAdapter($object);
