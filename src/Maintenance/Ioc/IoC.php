@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\HomeWork\PartFive;
+namespace App\Maintenance\Ioc;
 
 use RuntimeException;
 

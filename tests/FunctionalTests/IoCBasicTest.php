@@ -9,7 +9,7 @@ use App\Command\ChangeVelocityCommand;
 use App\Enum\SpaceObjectPropertyEnum;
 use App\Exception\ProjectException;
 use App\Exception\PropertyNotFoundException;
-use App\HomeWork\PartFive\IoC;
+use App\Maintenance\Ioc\IoC;
 use App\Reposition\Coordinates;
 use App\Reposition\FuelBurnableAdapter;
 use App\SpaceObjects\Ship\DefaultShip;
