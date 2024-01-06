@@ -133,8 +133,8 @@ class AutoGenerateClass implements AutoGenerateClassInterface
             return 'mixed';
         }
 
-        $type = explode('\\', $type);
+        $typeExploded = explode('\\', $type);
 
-        return array_pop($type);
+        return array_pop($typeExploded);
     }
 }
