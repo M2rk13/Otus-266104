@@ -1,0 +1,12 @@
+%s
+
+class %s
+{
+    public function __construct(
+        private readonly object $object,
+        private readonly IoC $ioC,
+    ) {
+    }
+
+%s
+}

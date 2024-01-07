@@ -6,5 +6,5 @@ namespace App\Reposition;
 
 interface VelocityChangeableInterface extends MovableInterface
 {
-    public function setVelocity(Coordinates $newVelocity): void;
+    public function setVelocity(Coordinates $newVector): void;
 }
