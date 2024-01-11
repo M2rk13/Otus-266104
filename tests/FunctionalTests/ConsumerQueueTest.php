@@ -38,10 +38,11 @@ class ConsumerQueueTest extends TestCase
             $consumer->incrementProcessedTasksCounter();
         };
 
+        $processedTasks = $consumer->getProcessedTaskCounter();
         $processor->setProcessFunction($function);
         $processor->execute();
 
-        self::assertGreaterThan(0, $consumer->getProcessedTaskCounter());
+        self::assertGreaterThan($processedTasks, $consumer->getProcessedTaskCounter());
     }
 
     public function testHardStop(): void
