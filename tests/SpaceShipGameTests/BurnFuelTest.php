@@ -14,7 +14,7 @@ use App\Reposition\Coordinates;
 use App\Reposition\FuelBurnableAdapter;
 use App\Reposition\MovableAdapter;
 use App\SpaceObjects\Ship\DefaultShip;
-use App\Tests\SweetsThief;
+use App\Tests\Helpers\SweetsThief;
 use PHPUnit\Framework\TestCase;
 
 class BurnFuelTest extends TestCase

@@ -7,8 +7,8 @@ namespace App\Tests\FunctionalTests;
 use App\Command\LogThrowableCommand;
 use App\Command\MultipleRepeatCommand;
 use App\Command\RepeaterCommand;
-use App\Command\TestCommand;
 use App\Exception\NanValueException;
+use App\Tests\Helpers\ExceptionTestCommand;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
@@ -17,7 +17,7 @@ class TryCatchBasicTest extends TestCase
 {
     public function testLogException(): void
     {
-        $command = new TestCommand(100);
+        $command = new ExceptionTestCommand(100);
 
         $file = fopen(sys_get_temp_dir() . '/analog.txt', 'wb');
         fclose($file);
@@ -36,7 +36,7 @@ class TryCatchBasicTest extends TestCase
 
     public function testRepeatCommand(): void
     {
-        $command = new TestCommand(1);
+        $command = new ExceptionTestCommand(1);
 
         try {
             $command->execute();
@@ -49,7 +49,7 @@ class TryCatchBasicTest extends TestCase
 
     public function testLogAfterRepeat(): void
     {
-        $command = new TestCommand(1);
+        $command = new ExceptionTestCommand(1);
         $logFileBefore = file_get_contents(sys_get_temp_dir() . '/analog.txt');
 
         try {
@@ -70,7 +70,7 @@ class TryCatchBasicTest extends TestCase
 
     public function testLogAfterMultipleRepeat(): void
     {
-        $command = new TestCommand(1);
+        $command = new ExceptionTestCommand(1);
         $logFileBefore = file_get_contents(sys_get_temp_dir() . '/analog.txt');
 
         try {
