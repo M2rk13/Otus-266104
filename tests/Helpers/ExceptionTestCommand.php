@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Command;
+namespace App\Tests\Helpers;
 
+use App\Command\CommandInterface;
+use App\Exception\ImpossibleDiscriminantValueException;
 use App\Exception\NanValueException;
 use App\Exception\PropertyNotFoundException;
-use App\Exception\ImpossibleDiscriminantValueException;
 use App\Exception\SeniorCoefficientException;
 use Exception;
 
-class TestCommand implements CommandInterface
+class ExceptionTestCommand implements CommandInterface
 {
     private ?int $exceptionType;
 
