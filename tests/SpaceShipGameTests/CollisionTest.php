@@ -104,6 +104,52 @@ class CollisionTest extends TestCase
         $this->assertEquals($expectedResult, $actualResult);
     }
 
+    /**
+     * @dataProvider providerSeveralCollision
+     *
+     * @throws PropertyNotFoundException
+     */
+    public function testSeveralCollision($parameterList): void
+    {
+        $gameFieldList = [];
+
+        foreach ($parameterList as $key => $field) {
+            $gameObjectList = [];
+
+            foreach ($field as $shipName => $shipPosition) {
+                $gameObjectList[] = $this->prepareGameObject($shipName, $shipPosition);
+            }
+
+            $filedId = $key + 1;
+            $gameFieldList[] = new GameFieldChunkDto($filedId, $gameObjectList);
+        }
+
+        $expectedResult = [
+            1 => 'shipName: [Science ship], position: [1]',
+            2 => 'shipName: [Transport ship], position: [1]',
+            3 => 'shipName: [Colony ship], position: [1]',
+            4 => 'shipName: [Construction ship], position: [1]',
+        ];
+
+        $gameFieldDtoList = new GameFieldChunkListDto($gameFieldList);
+
+        $checkNearbyAndCollisionsCommand = new CheckCollisionCommand($gameFieldDtoList);
+        $checkNearbyAndCollisionsCommand->execute();
+
+        $actualResult = [];
+
+        foreach ($gameFieldDtoList->gameFieldListDto as $gameFieldDto) {
+            foreach ($gameFieldDto->gameObjectList as $gameObject) {
+                $position = $gameObject->getProperty(SpaceObjectPropertyEnum::SIMPLE_POSITION);
+                $name = $gameObject->getProperty(SpaceObjectPropertyEnum::SPACE_OBJECT_NAME);
+
+                $actualResult[$gameFieldDto->id] = sprintf('shipName: [%s], position: [%s]', $name, $position);
+            }
+        }
+
+        $this->assertEquals($expectedResult, $actualResult);
+    }
+
     private function prepareGameObject(string $shipName, string $simplePosition): DefaultShip
     {
         $ship = new DefaultShip();
@@ -137,6 +183,24 @@ class CollisionTest extends TestCase
                     'Science ship' => '2',
                     'Colony ship' => '3',
                     'Transport ship' => '4',
+                ],
+            ],
+        ];
+    }
+
+    public static function providerSeveralCollision(): array
+    {
+        return [
+            [
+                'parameterList' => [
+                    [
+                        'Construction ship' => '1',
+                        'Science ship' => '1',
+                    ],
+                    [
+                        'Colony ship' => '1',
+                        'Transport ship' => '1',
+                    ]
                 ],
             ],
         ];
