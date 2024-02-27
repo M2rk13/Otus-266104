@@ -12,4 +12,6 @@ enum SpaceObjectPropertyEnum
     public const ANGULAR_POSITION = 'angularPosition';
     public const FUEL_LEVEL_PROPERTY = 'fuelLevel';
     public const FUEL_CONSUMPTION_PROPERTY = 'fuelConsumption';
+    public const SPACE_OBJECT_NAME = 'objectName';
+    public const SIMPLE_POSITION = 'simplePosition';
 }
