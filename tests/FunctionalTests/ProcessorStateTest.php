@@ -23,8 +23,6 @@ class ProcessorStateTest extends TestCase
         $queue->push(new StateHardStopProcessorState());
         $queue->push(new EmptyTestCommand());
         $queue->push(new EmptyTestCommand());
-        $queue->push(new EmptyTestCommand());
-        $queue->push(new EmptyTestCommand());
 
         $processor = new Processor($queue, new RunState());
         $processor->run();
