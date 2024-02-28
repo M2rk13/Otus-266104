@@ -345,6 +345,9 @@ class InterpreterTest extends TestCase
         $ioC->resolve(IoC::IOC_REGISTER, self::AUTH_PLAYER_2, function () {
             return self::SCOPE_PLAYER_2;
         });
+        $ioC->resolve(IoC::IOC_REGISTER, 'some_secret_code', function () {
+            return 'system';
+        });
     }
 
     private function extractTorpedoFromIoC(IoC $ioC): SpaceObject
