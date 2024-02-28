@@ -64,7 +64,7 @@ class IoCBasicTest extends TestCase
         $ioC = $this->getIoCWithDependencies($ioC);
         $burnFuelCommand = $ioC->resolve(BurnFuelCommand::class);
 
-        $this->assertEquals(BurnFuelCommand::class, $burnFuelCommand::class, 'Не удалось найти зависимость в IoC контейнере.');
+        $this->assertEquals(BurnFuelCommand::class, $burnFuelCommand::class);
 
         $ioC->resolve(IoC::SCOPES_NEW, 'scope2');
         $ioC->resolve(IoC::SCOPES_CURRENT, 'scope2');
