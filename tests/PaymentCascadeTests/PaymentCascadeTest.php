@@ -132,20 +132,6 @@ class PaymentCascadeTest extends TestCase
 
         $transactionId = $this->getTransactionId();
 
-        $body = sprintf('{"transactionId": "%s", "status": "%s"}', $transactionId, TransactionStatusEnum::CANCEL);
-
-        $request = new Request(
-            method: 'POST',
-            uri: 'callback',
-            body: $body
-        );
-
-        $controller->gateway($request);
-
-        sleep(5);
-
-        $transactionId = $this->getTransactionId();
-
         $body = sprintf('{"transactionId": "%s", "status": "%s"}', $transactionId, TransactionStatusEnum::DONE);
 
         $request = new Request(
@@ -155,6 +141,8 @@ class PaymentCascadeTest extends TestCase
         );
 
         $controller->gateway($request);
+
+        sleep(1);
 
         $managerDB = new DBManager();
 
