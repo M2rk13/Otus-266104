@@ -128,7 +128,7 @@ class PaymentCascadeTest extends TestCase
         $response = $controller->gateway($request);
         $statusCode = $response->getStatusCode();
 
-        sleep(5);
+        sleep(10);
 
         $transactionId = $this->getTransactionId();
 
