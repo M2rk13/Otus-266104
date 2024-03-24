@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\PaymentCascadeTests;
 
 use App\Maintenance\Ioc\IoC;
-use App\ProjectCascade\Command\RabbitConsumerRunCommand;
 use App\ProjectCascade\Command\RabbitDefinitionUpdateCommand;
 use App\ProjectCascade\DBMaintence\DBManager;
 use App\ProjectCascade\Enum\CascadeTransactionStatusEnum;
@@ -15,7 +14,6 @@ use App\ProjectCascade\GateWay\Controller\GatewayController;
 use App\ProjectCascade\RabbitMQ\Cascade\CascadeConsumer;
 use App\ProjectCascade\RabbitMQ\Cascade\CascadeDefinition;
 use App\ProjectCascade\RabbitMQ\RabbitClient;
-use App\Tests\Helpers\SweetsThief;
 use Exception;
 use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
