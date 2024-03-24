@@ -5,12 +5,17 @@ declare(strict_types=1);
 namespace App\Tests\PaymentCascadeTests;
 
 use App\Maintenance\Ioc\IoC;
+use App\ProjectCascade\Command\RabbitConsumerRunCommand;
 use App\ProjectCascade\Command\RabbitDefinitionUpdateCommand;
 use App\ProjectCascade\DBMaintence\DBManager;
 use App\ProjectCascade\Enum\CascadeTransactionStatusEnum;
+use App\ProjectCascade\Enum\QueueEnum;
 use App\ProjectCascade\Enum\TransactionStatusEnum;
 use App\ProjectCascade\GateWay\Controller\GatewayController;
+use App\ProjectCascade\RabbitMQ\Cascade\CascadeConsumer;
 use App\ProjectCascade\RabbitMQ\Cascade\CascadeDefinition;
+use App\ProjectCascade\RabbitMQ\RabbitClient;
+use App\Tests\Helpers\SweetsThief;
 use Exception;
 use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
@@ -42,11 +47,6 @@ class PaymentCascadeTest extends TestCase
         parent::__construct($name);
     }
 
-    public function __destruct()
-    {
-        unset($GLOBALS['IoC']);
-    }
-
     /**
      * @throws \Doctrine\DBAL\Exception
      */
@@ -65,7 +65,19 @@ class PaymentCascadeTest extends TestCase
         $response = $controller->gateway($request);
         $statusCode = $response->getStatusCode();
 
-        sleep(5);
+        $rabbitClient = new RabbitClient();
+        $consumer = new CascadeConsumer();
+
+        sleep(2);
+
+        $messageList = [];
+
+        do {
+            $message = $rabbitClient->get(QueueEnum::CASCADE_QUEUE);
+            $messageList[] = $message;
+        } while ($message !== null);
+
+        $consumer->process(array_filter($messageList));
 
         $transactionId = $this->getTransactionId();
 
@@ -79,7 +91,18 @@ class PaymentCascadeTest extends TestCase
 
         $controller->gateway($request);
 
-        sleep(5);
+        sleep(2);
+
+        $messageList = [];
+
+        do {
+            $message = $rabbitClient->get(QueueEnum::CASCADE_QUEUE);
+            $messageList[] = $message;
+        } while ($message !== null);
+
+        $consumer->process(array_filter($messageList));
+
+        sleep(1);
 
         $transactionId = $this->getTransactionId();
 
@@ -128,7 +151,19 @@ class PaymentCascadeTest extends TestCase
         $response = $controller->gateway($request);
         $statusCode = $response->getStatusCode();
 
-        sleep(10);
+        $rabbitClient = new RabbitClient();
+        $consumer = new CascadeConsumer();
+
+        sleep(2);
+
+        $messageList = [];
+
+        do {
+            $message = $rabbitClient->get(QueueEnum::CASCADE_QUEUE);
+            $messageList[] = $message;
+        } while ($message !== null);
+
+        $consumer->process(array_filter($messageList));
 
         $transactionId = $this->getTransactionId();
 

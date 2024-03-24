@@ -43,7 +43,7 @@ class GatewayController
                 $status = 201;
             }
 
-            $source = $responseData['source'] ?: [];
+            $source = $responseData['source'] ?? [];
             $headers = ['source' => $source];
             $headers = array_filter($headers);
 
