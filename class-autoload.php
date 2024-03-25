@@ -56,74 +56,6 @@ if ($isDocker) {
     $GLOBALS['mysql_host'] = 'mysql.proj';
 }
 
-$ioC = $GLOBALS['IoC'] = new IoC();
-
-$ioC->resolve(IoC::IOC_REGISTER, SystemVariablesEnum::DATABASE_CONNECTION, function () {
-    $DBConnectionParams = [
-        'dbname' => 'test',
-        'user' => 'root',
-        'password' => 'password',
-        'host' => $GLOBALS['mysql_host'],
-        'driver' => 'pdo_mysql',
-    ];
-
-    return new Connection($DBConnectionParams);
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, SystemVariablesEnum::SQL_TRANSACTION_SERVICE, function () {
-    $connection = $GLOBALS['IoC']->resolve(SystemVariablesEnum::DATABASE_CONNECTION);
-
-    return new DBTransactionService($connection);
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, SystemVariablesEnum::RABBIT_CONNECTION, function () {
-    return new AMQPStreamConnection($GLOBALS['rabbit_host'], 5672, 'rmuser', 'rmpassword');
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, RabbitClientInterface::class, function () {
-    return new RabbitClient();
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, BillingService::class . 'DBManager', function () {
-    return new BillingServiceManager();
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, BillingService::class, function () {
-    return new BillingService();
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, CascadeHandler::class . 'DBManager', function () {
-    return new CascadeManager();
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, AuthHandler::class . 'DBManager', function () {
-    return new AuthManager();
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, AuthInterface::class, function () {
-    return new AuthHandler();
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, ProviderRegistry::class, function () {
-    return new ProviderRegistry();
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, GateWayHandlerRegistry::class, function () {
-    return new GateWayHandlerRegistry();
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, CascadeHandler::class, function () {
-    return new CascadeHandler();
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, CascadeConsumer::class, function () {
-    return new CascadeConsumer();
-});
-
-$ioC->resolve(IoC::IOC_REGISTER, QueueServiceInterface::class, function () {
-    return new QueueService();
-});
-
 $classList = get_declared_classes();
 $providerList = [];
 $gatewayList = [];
@@ -150,3 +82,153 @@ foreach ($classList as $class) {
 
 $GLOBALS['provider_list'] = $providerList;
 $GLOBALS['gateway'] = $gatewayList;
+
+$ioC = $GLOBALS['IoC'] = new IoC();
+
+$ioC->resolve(IoC::IOC_REGISTER, SystemVariablesEnum::DATABASE_CONNECTION, function () use ($ioC) {
+    $DBConnectionParams = [
+        'dbname' => 'test',
+        'user' => 'root',
+        'password' => 'password',
+        'host' => $GLOBALS['mysql_host'],
+        'driver' => 'pdo_mysql',
+    ];
+
+    $dbConnection = new Connection($DBConnectionParams);
+
+    $ioC->resolve(IoC::IOC_REGISTER, SystemVariablesEnum::DATABASE_CONNECTION, function () use ($dbConnection) {
+        return $dbConnection;
+    });
+
+    return $dbConnection;
+});
+
+$ioC->resolve(IoC::IOC_REGISTER, SystemVariablesEnum::SQL_TRANSACTION_SERVICE, function () {
+    $connection = $GLOBALS['IoC']->resolve(SystemVariablesEnum::DATABASE_CONNECTION);
+
+    return new DBTransactionService($connection);
+});
+
+$ioC->resolve(IoC::IOC_REGISTER, SystemVariablesEnum::RABBIT_CONNECTION, function () use ($ioC) {
+    $rabbitConnection = new AMQPStreamConnection($GLOBALS['rabbit_host'], 5672, 'rmuser', 'rmpassword');
+
+    $ioC->resolve(IoC::IOC_REGISTER, SystemVariablesEnum::RABBIT_CONNECTION, function () use ($rabbitConnection) {
+        return $rabbitConnection;
+    });
+
+    return $rabbitConnection;
+});
+
+$ioC->resolve(IoC::IOC_REGISTER, RabbitClientInterface::class, function () use ($ioC) {
+    $rabbitClient = new RabbitClient();
+
+    $ioC->resolve(IoC::IOC_REGISTER, RabbitClientInterface::class, function () use ($rabbitClient) {
+        return $rabbitClient;
+    });
+
+    return $rabbitClient;
+});
+
+$ioC->resolve(IoC::IOC_REGISTER, ProviderRegistry::class, function () use ($ioC) {
+    $providerRegistry = new ProviderRegistry();
+
+    $ioC->resolve(IoC::IOC_REGISTER, ProviderRegistry::class, function () use ($providerRegistry) {
+        return $providerRegistry;
+    });
+
+    return $providerRegistry;
+});
+
+$ioC->resolve(IoC::IOC_REGISTER, BillingService::class . 'DBManager', function () use ($ioC) {
+    $billingManager = new BillingServiceManager();
+
+    $ioC->resolve(IoC::IOC_REGISTER, BillingService::class . 'DBManager', function () use ($billingManager) {
+        return $billingManager;
+    });
+
+    return $billingManager;
+});
+
+$ioC->resolve(IoC::IOC_REGISTER, BillingService::class, function () use ($ioC) {
+    $billingService = new BillingService();
+
+    $ioC->resolve(IoC::IOC_REGISTER, BillingService::class, function () use ($billingService) {
+        return $billingService;
+    });
+
+    return $billingService;
+});
+
+$ioC->resolve(IoC::IOC_REGISTER, CascadeHandler::class . 'DBManager', function () use ($ioC) {
+    $cascadeManager = new CascadeManager();
+
+    $ioC->resolve(IoC::IOC_REGISTER, CascadeHandler::class . 'DBManager', function () use ($cascadeManager) {
+        return $cascadeManager;
+    });
+
+    return $cascadeManager;
+});
+
+$ioC->resolve(IoC::IOC_REGISTER, CascadeHandler::class, function () use ($ioC) {
+    $cascadeHandler = new CascadeHandler();
+
+    $ioC->resolve(IoC::IOC_REGISTER, CascadeHandler::class, function () use ($cascadeHandler) {
+        return $cascadeHandler;
+    });
+
+    return $cascadeHandler;
+});
+
+$cascadeConsumer = new CascadeConsumer();
+
+$ioC->resolve(IoC::IOC_REGISTER, CascadeConsumer::class, function () use ($ioC) {
+    $cascadeConsumer = new CascadeConsumer();
+
+    $ioC->resolve(IoC::IOC_REGISTER, CascadeConsumer::class, function () use ($cascadeConsumer) {
+        return $cascadeConsumer;
+    });
+
+    return $cascadeConsumer;
+});
+
+$ioC->resolve(IoC::IOC_REGISTER, AuthHandler::class . 'DBManager', function () use ($ioC) {
+    $authManager = new AuthManager();
+
+    $ioC->resolve(IoC::IOC_REGISTER, AuthHandler::class . 'DBManager', function () use ($authManager) {
+        return $authManager;
+    });
+
+    return $authManager;
+});
+
+$ioC->resolve(IoC::IOC_REGISTER, AuthInterface::class, function () use ($ioC) {
+    $authHandler = new AuthHandler();
+
+    $ioC->resolve(IoC::IOC_REGISTER, AuthInterface::class, function () use ($authHandler) {
+        return $authHandler;
+    });
+
+    return $authHandler;
+});
+
+$ioC->resolve(IoC::IOC_REGISTER, GateWayHandlerRegistry::class, function () use ($ioC) {
+    $gatewayHandlerRegistry = new GateWayHandlerRegistry();
+
+    $ioC->resolve(IoC::IOC_REGISTER, GateWayHandlerRegistry::class, function () use ($gatewayHandlerRegistry) {
+        return $gatewayHandlerRegistry;
+    });
+
+    return $gatewayHandlerRegistry;
+});
+
+$queueService = new QueueService();
+
+$ioC->resolve(IoC::IOC_REGISTER, QueueServiceInterface::class, function () use ($ioC) {
+    $queueService = new QueueService();
+
+    $ioC->resolve(IoC::IOC_REGISTER, QueueServiceInterface::class, function () use ($queueService) {
+        return $queueService;
+    });
+
+    return $queueService;
+});
