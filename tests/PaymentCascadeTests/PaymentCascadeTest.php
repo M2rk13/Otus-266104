@@ -25,6 +25,7 @@ class PaymentCascadeTest extends TestCase
      */
     public function __construct(string $name)
     {
+        $GLOBALS['provider_list'] = require './provider-autoload.php';
         $isDocker = (bool) shell_exec('printenv IS_DOCKER');
 
         $GLOBALS['rabbit_host'] = '127.0.0.1';

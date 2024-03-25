@@ -3,7 +3,6 @@
 namespace App\ProjectCascade\Billing\PaymentSystem\ProviderCascadeBundle;
 
 use App\ProjectCascade\Billing\PaymentSystem\BillingBundle\PaymentSystemProviderInterface;
-use App\ProjectCascade\Enum\ProviderEnum;
 use App\ProjectCascade\RabbitMQ\Cascade\CascadeMessageDto;
 use App\ProjectCascade\Service\QueueService;
 use JsonException;
@@ -29,8 +28,8 @@ class PaymentSystemProviderCascade implements PaymentSystemProviderInterface
         return null;
     }
 
-    public function getName(): string
+    public static function getName(): string
     {
-        return ProviderEnum::CASCADE;
+        return 'cascade';
     }
 }

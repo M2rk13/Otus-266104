@@ -3,7 +3,6 @@
 namespace App\ProjectCascade\Billing\PaymentSystem\ProviderFourBundle;
 
 use App\ProjectCascade\Billing\PaymentSystem\BillingBundle\PaymentSystemProviderInterface;
-use App\ProjectCascade\Enum\ProviderEnum;
 use App\ProjectCascade\Exception\PaymentProviderException;
 
 class PaymentSystemProviderFour implements PaymentSystemProviderInterface
@@ -13,8 +12,8 @@ class PaymentSystemProviderFour implements PaymentSystemProviderInterface
         throw new PaymentProviderException($transactionId);
     }
 
-    public function getName(): string
+    public static function getName(): string
     {
-        return ProviderEnum::FOUR;
+        return 'four';
     }
 }

@@ -3,7 +3,6 @@
 namespace App\ProjectCascade\Billing\PaymentSystem\ProviderFiveBundle;
 
 use App\ProjectCascade\Billing\PaymentSystem\BillingBundle\PaymentSystemProviderInterface;
-use App\ProjectCascade\Enum\ProviderEnum;
 use App\ProjectCascade\Service\IdGenerator;
 
 class PaymentSystemProviderFive implements PaymentSystemProviderInterface
@@ -14,8 +13,8 @@ class PaymentSystemProviderFive implements PaymentSystemProviderInterface
     }
 
 
-    public function getName(): string
+    public static function getName(): string
     {
-        return ProviderEnum::FIVE;
+        return 'five';
     }
 }

@@ -3,9 +3,7 @@
 namespace App\ProjectCascade\Billing\PaymentSystem\ProviderTwoBundle;
 
 use App\ProjectCascade\Billing\PaymentSystem\BillingBundle\PaymentSystemProviderInterface;
-use App\ProjectCascade\Enum\ProviderEnum;
 use App\ProjectCascade\Exception\PaymentProviderException;
-use PHPUnit\Logging\Exception;
 
 class PaymentSystemProviderTwo implements PaymentSystemProviderInterface
 {
@@ -15,8 +13,8 @@ class PaymentSystemProviderTwo implements PaymentSystemProviderInterface
     }
 
 
-    public function getName(): string
+    public static function getName(): string
     {
-        return ProviderEnum::TWO;
+        return 'two';
     }
 }
