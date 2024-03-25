@@ -48,29 +48,56 @@ class CallbackHandler implements GateWayHandlerInterface
         $arrayBody = json_decode($jsonBody, true, 512, JSON_THROW_ON_ERROR);
         $transactionId = $arrayBody['transactionId'];
 
-        switch ($arrayBody['status']) {
-            case TransactionStatusEnum::CANCEL:
-                $this->billingService->cancelTransaction($transactionId);
+        $function = $this->getTransitionFunction($arrayBody['status']);
 
-                $primalTransactionId = $this->billingService->findPrimalTransaction($transactionId);
-
-                if ($primalTransactionId) {
-                    $this->billingService->changeTransactionCascadeStatus($transactionId, CascadeTransactionStatusEnum::CANCEL);
-                    $this->billingService->processTransaction(new PaymentDto(['providerName' => 'cascade']), $primalTransactionId);
-                }
-
-                break;
-            case TransactionStatusEnum::DONE:
-                $this->billingService->flushTransaction($transactionId);
-
-                break;
-            default:
-                // no break
+        if ($function) {
+            $function($transactionId);
         }
 
         return [
             'action' => 'ok',
         ];
+    }
+
+    private function getTransitionFunction(string $currentStatus): ?array
+    {
+        $stateMachine = [
+            TransactionStatusEnum::CANCEL => [$this, 'cancelTransaction'],
+            TransactionStatusEnum::DONE => [$this, 'flushTransaction'],
+        ];
+
+        return $stateMachine[$currentStatus] ?? null;
+    }
+
+    /**
+     * @throws DBException
+     * @throws DbalException
+     * @throws PaymentProviderNotFoundException
+     * @throws Throwable
+     * @throws TransactionNotProcessableException
+     */
+    private function cancelTransaction(string $transactionId): void
+    {
+        $this->billingService->cancelTransaction($transactionId);
+
+        $primalTransactionId = $this->billingService->findPrimalTransaction($transactionId);
+
+        if ($primalTransactionId) {
+            $this->billingService->changeTransactionCascadeStatus($transactionId, CascadeTransactionStatusEnum::CANCEL);
+            $this->billingService->processTransaction(new PaymentDto(['providerName' => 'cascade']), $primalTransactionId);
+        }
+    }
+
+    /**
+     * @throws DBException
+     * @throws DbalException
+     * @throws PaymentProviderNotFoundException
+     * @throws Throwable
+     * @throws TransactionNotProcessableException
+     */
+    private function flushTransaction(string $transactionId): void
+    {
+        $this->billingService->flushTransaction($transactionId);
     }
 
     public static function getMethod(): string
