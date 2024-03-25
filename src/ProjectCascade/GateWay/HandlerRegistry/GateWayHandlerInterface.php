@@ -10,5 +10,6 @@ interface GateWayHandlerInterface
 {
     public function handle(Request $request, ?string $playerId = null): array;
     public function authRequired(): bool;
-    public static function method(): string;
+    public static function getMethod(): string;
+    public static function getUri(): string;
 }

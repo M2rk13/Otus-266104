@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/src/ProjectCascade/Billing/PaymentSystem/BillingBundle/PaymentSystemProviderInterface.php';
 require_once __DIR__ . '/src/Maintenance/Interpreter/InterpretCommandInterface.php';
+require_once __DIR__ . '/src/ProjectCascade/GateWay/HandlerRegistry/GateWayHandlerInterface.php';
 require_once __DIR__ . '/src/Exception/ProjectException.php';
 require_once __DIR__ . '/src/Exception/MathematicalException.php';
 require_once __DIR__ . '/src/Exception/SpaceShipGameException.php';
@@ -21,6 +22,7 @@ $autoload('/src/*/*.php');
 $autoload('/src/*/*/*Interface.php');
 $autoload('/src/*/*/*.php');
 $autoload('/src/ProjectCascade/Billing/PaymentSystem/*/*.php');
+$autoload('/src/ProjectCascade/GateWay/UseCase/*/*.php');
 
 use App\Maintenance\Ioc\IoC;
 use App\ProjectCascade\Billing\PaymentSystem\BillingBundle\PaymentSystemProviderInterface;
@@ -124,6 +126,7 @@ $ioC->resolve(IoC::IOC_REGISTER, QueueServiceInterface::class, function () {
 
 $classList = get_declared_classes();
 $providerList = [];
+$gatewayList = [];
 
 foreach ($classList as $class) {
     if (in_array(
@@ -134,6 +137,16 @@ foreach ($classList as $class) {
         /** @var PaymentSystemProviderInterface $class */
         $providerList[$class::getName()] = $class;
     }
+
+    if (in_array(
+        GateWayHandlerInterface::class,
+        class_implements($class),
+        true
+    )) {
+        /** @var GateWayHandlerInterface $class */
+        $gatewayList[$class::getUri()][$class::getMethod()] = $class;
+    }
 }
 
 $GLOBALS['provider_list'] = $providerList;
+$GLOBALS['gateway'] = $gatewayList;

@@ -10,20 +10,13 @@ use App\ProjectCascade\GateWay\UseCase\PaymentHandler\GateWayPaymentHandler;
 
 class GateWayHandlerRegistry
 {
-    // это реестр, который можно организовать разными способами автозагрузки,
-    // условно обозначим хардкодом
     /** @var GateWayHandlerInterface[] */
-    private array $actionRegistry = [
-        'payment' => [
-            'POST' => GateWayPaymentHandler::class,
-        ],
-        'callback' => [
-            'POST' => CallbackHandler::class
-        ]
-        // ...
-        // ...
-        // ...
-    ];
+    private array $actionRegistry;
+
+    public function __construct()
+    {
+        $this->actionRegistry = $GLOBALS['gateway'];
+    }
 
     /**
      * @throws UriHandlerNotFoundException

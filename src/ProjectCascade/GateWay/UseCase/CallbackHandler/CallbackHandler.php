@@ -73,8 +73,13 @@ class CallbackHandler implements GateWayHandlerInterface
         ];
     }
 
-    public static function method(): string
+    public static function getMethod(): string
     {
         return 'POST';
+    }
+
+    public static function getUri(): string
+    {
+        return 'callback';
     }
 }

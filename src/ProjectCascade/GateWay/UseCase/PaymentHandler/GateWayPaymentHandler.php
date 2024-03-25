@@ -56,8 +56,13 @@ class GateWayPaymentHandler implements GateWayHandlerInterface
         return true;
     }
 
-    public static function method(): string
+    public static function getMethod(): string
     {
         return 'POST';
+    }
+
+    public static function getUri(): string
+    {
+        return 'payment';
     }
 }
