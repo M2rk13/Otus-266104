@@ -1,26 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\Service;
 
-use App\ProjectCascade\Enum\QueueMessageTypeEnum;
-use App\ProjectCascade\RabbitMQ\Cascade\CascadeMessageDto;
 use App\ProjectCascade\RabbitMQ\QueueMessageDto;
-use App\ProjectCascade\RabbitMQ\RabbitClient;
+use App\ProjectCascade\RabbitMQ\RabbitClientInterface;
 use App\ProjectCascade\RabbitMQ\RabbitDtoInterface;
-use JsonException;
 
-class QueueService
+final class QueueService implements QueueServiceInterface
 {
-    private RabbitClient $rabbitClient;
+    private RabbitClientInterface $rabbitClient;
 
     public function __construct()
     {
-        $this->rabbitClient = new RabbitClient();
+        /** @var RabbitClientInterface $rabbitClient */
+        $rabbitClient = IoCResolverService::getClass(RabbitClientInterface::class);
+        $this->rabbitClient = $rabbitClient;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function putQueueMessage(
         RabbitDtoInterface $rabbitDto,
         string $routingKey,
@@ -34,16 +32,5 @@ class QueueService
         );
 
         $this->rabbitClient->put($messageDto);
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function putCascadePaymentMessage(CascadeMessageDto $rabbitDto): void
-    {
-        $this->putQueueMessage(
-            $rabbitDto,
-            QueueMessageTypeEnum::CASCADE_PROVIDER_OPERATION
-        );
     }
 }

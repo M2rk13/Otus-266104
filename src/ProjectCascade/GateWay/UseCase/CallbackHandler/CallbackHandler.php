@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\GateWay\UseCase\CallbackHandler;
 
 use App\ProjectCascade\Dto\PaymentDto;
@@ -10,6 +12,7 @@ use App\ProjectCascade\Exception\PaymentProviderNotFoundException;
 use App\ProjectCascade\Exception\TransactionNotProcessableException;
 use App\ProjectCascade\GateWay\HandlerRegistry\GateWayHandlerInterface;
 use App\ProjectCascade\Service\BillingService;
+use App\ProjectCascade\Service\IoCResolverService;
 use Doctrine\DBAL\Exception as DbalException;
 use GuzzleHttp\Psr7\Request;
 use JsonException;
@@ -21,7 +24,9 @@ class CallbackHandler implements GateWayHandlerInterface
 
     public function __construct()
     {
-        $this->billingService = new BillingService();
+        /** @var BillingService $billingService */
+        $billingService = IoCResolverService::getClass(BillingService::class);
+        $this->billingService = $billingService;
     }
 
     public function authRequired(): bool
@@ -66,5 +71,10 @@ class CallbackHandler implements GateWayHandlerInterface
         return [
             'action' => 'ok',
         ];
+    }
+
+    public static function method(): string
+    {
+        return 'POST';
     }
 }

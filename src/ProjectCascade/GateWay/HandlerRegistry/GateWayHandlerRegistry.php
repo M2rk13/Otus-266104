@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\GateWay\HandlerRegistry;
 
 use App\ProjectCascade\Exception\UriHandlerNotFoundException;

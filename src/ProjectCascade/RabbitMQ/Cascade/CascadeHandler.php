@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\RabbitMQ\Cascade;
 
 use App\ProjectCascade\Billing\PaymentSystem\BillingBundle\PaymentSystemProviderInterface;
 use App\ProjectCascade\Billing\Registry\ProviderRegistry;
+use App\ProjectCascade\DBMaintence\DBManager;
 use App\ProjectCascade\Dto\PaymentDto;
 use App\ProjectCascade\Enum\CascadeTransactionStatusEnum;
 use App\ProjectCascade\Exception\PaymentProviderNotFoundException;
@@ -11,20 +14,28 @@ use App\ProjectCascade\Exception\TransactionNotProcessableException;
 use App\ProjectCascade\RabbitMQ\RabbitDtoInterface;
 use App\ProjectCascade\RabbitMQ\RabbitHandlerInterface;
 use App\ProjectCascade\Service\BillingService;
+use App\ProjectCascade\Service\IoCResolverService;
 use Doctrine\DBAL\Exception;
 use Throwable;
 
 class CascadeHandler implements RabbitHandlerInterface
 {
-    private CascadeManager $manager;
+    /** @var CascadeManager  */
+    private DBManager $manager;
     private ProviderRegistry $registry;
     private BillingService $billingService;
 
     public function __construct()
     {
-        $this->manager = new CascadeManager();
-        $this->registry = new ProviderRegistry();
-        $this->billingService = new BillingService();
+        $this->manager = IoCResolverService::getManager(self::class);
+
+        /** @var ProviderRegistry $registry */
+        $registry = IoCResolverService::getClass(ProviderRegistry::class);
+        $this->registry = $registry;
+
+        /** @var BillingService $billingService */
+        $billingService = IoCResolverService::getClass(BillingService::class);
+        $this->billingService = $billingService;
     }
 
     /**
@@ -56,7 +67,7 @@ class CascadeHandler implements RabbitHandlerInterface
 
         $paymentDto = new PaymentDto([
             'playerId' => $transactionDto->getPlayerId(),
-            'providerName' => $provider->getName(),
+            'providerName' => $provider::getName(),
             'amount' => $transactionDto->getAmount(),
             'paymentDetails' => $transactionDto->getPaymentDetails(),
         ]);

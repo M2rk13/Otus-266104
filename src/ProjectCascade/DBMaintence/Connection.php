@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\DBMaintence;
 
 use App\ProjectCascade\Exception\DBException;
@@ -12,10 +14,11 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
+use Doctrine\DBAL\ServerVersionProvider;
 use Doctrine\DBAL\TransactionIsolationLevel;
 use SensitiveParameter;
 
-class Connection
+class Connection implements ServerVersionProvider
 {
     private DbalConnection $dbalConnection;
 
@@ -174,5 +177,13 @@ class Connection
     public function delete(string $table, array $criteria = [], array $types = []): int|string
     {
         return $this->dbalConnection->delete($table, $criteria, $types);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getServerVersion(): string
+    {
+        return $this->dbalConnection->getServerVersion();
     }
 }

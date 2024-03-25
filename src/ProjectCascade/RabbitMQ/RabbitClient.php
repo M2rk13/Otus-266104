@@ -8,12 +8,12 @@ use App\ProjectCascade\Enum\QueueEnum;
 use App\ProjectCascade\Service\IoCResolverService;
 use Exception;
 use JsonException;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Channel\AbstractChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 
-class RabbitClient
+class RabbitClient implements RabbitClientInterface
 {
-    private AMQPStreamConnection $connection;
+    private AbstractChannel $connection;
 
     /**
      * @throws Exception

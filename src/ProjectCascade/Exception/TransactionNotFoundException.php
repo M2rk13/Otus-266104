@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\Exception;
 
 class TransactionNotFoundException extends ProjectCascadeException

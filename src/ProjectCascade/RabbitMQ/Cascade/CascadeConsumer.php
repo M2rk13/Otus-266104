@@ -6,6 +6,7 @@ namespace App\ProjectCascade\RabbitMQ\Cascade;
 
 use App\ProjectCascade\RabbitMQ\AbstractConsumer;
 use App\ProjectCascade\RabbitMQ\RabbitHandlerInterface;
+use App\ProjectCascade\Service\IoCResolverService;
 
 class CascadeConsumer extends AbstractConsumer
 {
@@ -13,7 +14,9 @@ class CascadeConsumer extends AbstractConsumer
 
     public function __construct()
     {
-        $this->handler = new CascadeHandler();
+        /** @var CascadeHandler $handler */
+        $handler = IoCResolverService::getClass(CascadeHandler::class);
+        $this->handler = $handler;
 
         parent::__construct();
     }

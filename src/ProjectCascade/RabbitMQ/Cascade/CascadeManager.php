@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\RabbitMQ\Cascade;
 
 use App\ProjectCascade\DBMaintence\DBManager;

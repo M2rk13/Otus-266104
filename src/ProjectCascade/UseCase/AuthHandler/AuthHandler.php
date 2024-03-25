@@ -1,25 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\UseCase\AuthHandler;
 
+use App\ProjectCascade\DBMaintence\DBManager;
 use App\ProjectCascade\Exception\PlayerNotFoundException;
+use App\ProjectCascade\Service\IoCResolverService;
 use Doctrine\DBAL\Exception;
 use GuzzleHttp\Psr7\Request;
 
-class AuthHandler
+readonly class AuthHandler implements AuthInterface
 {
-    private readonly AuthManager $manager;
+    /** @var AuthManager  */
+    private DBManager $manager;
 
     public function __construct()
     {
-        $this->manager = new AuthManager();
+        $this->manager = IoCResolverService::getManager(self::class);
     }
 
     /**
      * @throws PlayerNotFoundException
      * @throws Exception
      */
-    public function getPlayerId(Request $request): string
+    public function auth(Request $request): string
     {
         $authHeader = $request->getHeader('auth');
         $authToken = array_shift($authHeader);

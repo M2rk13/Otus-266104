@@ -1,24 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\GateWay\Controller;
 
 use App\ProjectCascade\Exception\PlayerNotFoundException;
 use App\ProjectCascade\Exception\UriHandlerNotFoundException;
 use App\ProjectCascade\GateWay\HandlerRegistry\GateWayHandlerRegistry;
-use App\ProjectCascade\UseCase\AuthHandler\AuthHandler;
+use App\ProjectCascade\Service\IoCResolverService;
+use App\ProjectCascade\UseCase\AuthHandler\AuthInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Throwable;
 
 class GatewayController
 {
-    private AuthHandler $authHandler;
+    private AuthInterface $authHandler;
     private GateWayHandlerRegistry $handlerRegistry;
 
     public function __construct()
     {
-        $this->authHandler = new AuthHandler();
-        $this->handlerRegistry = new GateWayHandlerRegistry();
+        /** @var AuthInterface $authHandler */
+        $authHandler = IoCResolverService::getClass(AuthInterface::class);
+        $this->authHandler = $authHandler;
+
+        /** @var GateWayHandlerRegistry $handlerRegistry */
+        $handlerRegistry = IoCResolverService::getClass(GateWayHandlerRegistry::class);
+        $this->handlerRegistry = $handlerRegistry;
     }
 
     public function gateway(Request $request): Response
@@ -27,11 +35,11 @@ class GatewayController
             $route = $request->getUri();
             $method = $request->getMethod();
 
-            $handler = $this->handlerRegistry->getHandler($route, $method);
+            $handler = $this->handlerRegistry->getHandler($route->getPath(), $method);
             $playerId = null;
 
             if ($handler->authRequired()) {
-                $playerId = $this->authHandler->getPlayerId($request);
+                $playerId = $this->authHandler->auth($request);
             }
 
             $responseData = $handler->handle($request, $playerId);

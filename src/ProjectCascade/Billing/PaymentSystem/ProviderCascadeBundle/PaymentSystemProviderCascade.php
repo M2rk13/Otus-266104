@@ -1,29 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\Billing\PaymentSystem\ProviderCascadeBundle;
 
 use App\ProjectCascade\Billing\PaymentSystem\BillingBundle\PaymentSystemProviderInterface;
+use App\ProjectCascade\Enum\QueueMessageTypeEnum;
 use App\ProjectCascade\RabbitMQ\Cascade\CascadeMessageDto;
-use App\ProjectCascade\Service\QueueService;
-use JsonException;
+use App\ProjectCascade\Service\IoCResolverService;
+use App\ProjectCascade\Service\QueueServiceInterface;
 
 class PaymentSystemProviderCascade implements PaymentSystemProviderInterface
 {
-    private QueueService $queueService;
+    private QueueServiceInterface $queueService;
 
     public function __construct()
     {
-        $this->queueService = new QueueService();
+        /** @var QueueServiceInterface $queueService */
+        $queueService = IoCResolverService::getClass(QueueServiceInterface::class);
+        $this->queueService = $queueService;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function requestPayment(string $transactionId): ?string
     {
         $dto = new CascadeMessageDto(['transactionId' => $transactionId]);
 
-        $this->queueService->putCascadePaymentMessage($dto);
+        $this->queueService->putQueueMessage($dto, QueueMessageTypeEnum::CASCADE_PROVIDER_OPERATION);
 
         return null;
     }

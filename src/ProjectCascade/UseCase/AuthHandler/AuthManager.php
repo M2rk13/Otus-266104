@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\UseCase\AuthHandler;
 
 use App\ProjectCascade\DBMaintence\DBManager;
@@ -36,6 +38,6 @@ class AuthManager extends DBManager
             $qb->getParameters()
         );
 
-        return $stmt->fetchOne() ?: null;
+        return (string) $stmt->fetchOne() ?: null;
     }
 }

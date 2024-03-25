@@ -25,20 +25,7 @@ class PaymentCascadeTest extends TestCase
      */
     public function __construct(string $name)
     {
-        $GLOBALS['provider_list'] = require './provider-autoload.php';
-        $isDocker = (bool) shell_exec('printenv IS_DOCKER');
-
-        $GLOBALS['rabbit_host'] = '127.0.0.1';
-        $GLOBALS['mysql_host'] = '127.0.0.1';
-
-        if ($isDocker) {
-            $GLOBALS['rabbit_host'] = 'rabbitmq.proj';
-            $GLOBALS['mysql_host'] = 'mysql.proj';
-        }
-
-        if (isset($GLOBALS['IoC']) === false) {
-            $GLOBALS['IoC'] = new IoC();
-        }
+        require './class-autoload.php';
 
         $cmd = new RabbitDefinitionUpdateCommand([new CascadeDefinition()]);
         $cmd->execute();

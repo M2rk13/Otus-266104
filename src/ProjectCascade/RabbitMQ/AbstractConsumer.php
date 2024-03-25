@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\RabbitMQ;
 
+use App\ProjectCascade\Service\IoCResolverService;
 use JsonException;
 use PhpAmqpLib\Message\AMQPMessage;
 use Throwable;
@@ -9,11 +12,13 @@ use Throwable;
 abstract class AbstractConsumer
 {
     protected readonly RabbitHandlerInterface $handler;
-    private RabbitClient $rabbitClient;
+    private RabbitClientInterface $rabbitClient;
 
     public function __construct()
     {
-        $this->rabbitClient = new RabbitClient();
+        /** @var RabbitClientInterface $rabbitClient */
+        $rabbitClient = IoCResolverService::getClass(RabbitClientInterface::class);
+        $this->rabbitClient = $rabbitClient;
     }
 
     /**

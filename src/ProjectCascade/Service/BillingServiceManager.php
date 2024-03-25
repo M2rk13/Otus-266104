@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\Service;
 
 use App\ProjectCascade\DBMaintence\DBManager;
@@ -41,7 +43,7 @@ class BillingServiceManager extends DBManager
             $qb->getParameters()
         );
 
-        return $stmt->fetchOne() ?: null;
+        return (string) $stmt->fetchOne() ?: null;
     }
 
     /**
@@ -280,7 +282,7 @@ class BillingServiceManager extends DBManager
             $qb->getParameters()
         );
 
-        return $stmt->fetchOne() ?: null;
+        return (string) $stmt->fetchOne() ?: null;
     }
 
     /**

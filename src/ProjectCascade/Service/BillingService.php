@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\Service;
 
 use App\ProjectCascade\Billing\Registry\ProviderRegistry;
-use App\ProjectCascade\DBMaintence\DBTransactionService;
+use App\ProjectCascade\DBMaintence\DBManager;
+use App\ProjectCascade\DBMaintence\DBTransactionServiceInterface;
 use App\ProjectCascade\Dto\PaymentDto;
 use App\ProjectCascade\Dto\ProtectedDto;
 use App\ProjectCascade\Dto\TransactionDto;
@@ -19,15 +22,18 @@ use Throwable;
 
 class BillingService
 {
-    private BillingServiceManager $manager;
+    /** @var BillingServiceManager  */
+    private DBManager $manager;
     private ProviderRegistry $providerRegistry;
-    private DBTransactionService $transactionService;
+    private DBTransactionServiceInterface $transactionService;
 
     public function __construct()
     {
-        $this->manager = new BillingServiceManager();
-        $this->providerRegistry = new ProviderRegistry();
+        /** @var ProviderRegistry $providerRegistry */
+        $providerRegistry = IoCResolverService::getClass(ProviderRegistry::class);
+        $this->providerRegistry = $providerRegistry;
         $this->transactionService = IoCResolverService::getTransactionService();
+        $this->manager = IoCResolverService::getManager(self::class);
     }
 
     /**
@@ -39,7 +45,7 @@ class BillingService
     {
         $providerId = $this->manager->findProviderId($paymentDto->getProviderName());
 
-        $secretKey = RandomStringGenerator::generateRandomString();
+        $secretKey = IdGenerator::generateRandomString();
         $transactionDetails = json_encode($paymentDto->getPaymentDetails(), JSON_THROW_ON_ERROR);
         $transactionDetails = openssl_encrypt($transactionDetails, 'aes-256-cbc', $secretKey);
         $protectedKey = new ProtectedDto(['data' => ['secretKey' => $secretKey]]);

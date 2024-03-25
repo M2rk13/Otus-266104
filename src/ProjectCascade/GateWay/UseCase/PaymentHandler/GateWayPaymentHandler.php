@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\GateWay\UseCase\PaymentHandler;
 
 use App\ProjectCascade\Dto\PaymentDto;
 use App\ProjectCascade\Exception\PlayerNotFoundException;
 use App\ProjectCascade\GateWay\HandlerRegistry\GateWayHandlerInterface;
 use App\ProjectCascade\Service\BillingService;
+use App\ProjectCascade\Service\IoCResolverService;
 use Doctrine\DBAL\Exception as DbalException;
 use GuzzleHttp\Psr7\Request;
 use JsonException;
@@ -17,7 +20,9 @@ class GateWayPaymentHandler implements GateWayHandlerInterface
 
     public function __construct()
     {
-        $this->billingService = new BillingService();
+        /** @var BillingService $billingService */
+        $billingService = IoCResolverService::getClass(BillingService::class);
+        $this->billingService = $billingService;
     }
 
     /**
@@ -49,5 +54,10 @@ class GateWayPaymentHandler implements GateWayHandlerInterface
     public function authRequired(): bool
     {
         return true;
+    }
+
+    public static function method(): string
+    {
+        return 'POST';
     }
 }

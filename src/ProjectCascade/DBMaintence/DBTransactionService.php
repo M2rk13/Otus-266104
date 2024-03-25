@@ -8,7 +8,7 @@ use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\TransactionIsolationLevel;
 
 
-class DBTransactionService
+class DBTransactionService implements DBTransactionServiceInterface
 {
     /**
      * @var Connection

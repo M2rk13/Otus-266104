@@ -1,21 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectCascade\Command;
 
 use App\Command\CommandInterface;
 use App\ProjectCascade\RabbitMQ\Cascade\CascadeConsumer;
-use App\ProjectCascade\RabbitMQ\RabbitClient;
+use App\ProjectCascade\RabbitMQ\RabbitClientInterface;
+use App\ProjectCascade\Service\IoCResolverService;
 use JsonException;
 
 class RabbitConsumerRunCommand implements CommandInterface
 {
-    private RabbitClient $rabbitClient;
+    private RabbitClientInterface $rabbitClient;
     private CascadeConsumer $consumer;
 
     public function __construct(private readonly string $queueName)
     {
-        $this->rabbitClient = new RabbitClient();
-        $this->consumer = new CascadeConsumer();
+        /** @var RabbitClientInterface $rabbitClient */
+        $rabbitClient = IoCResolverService::getClass(RabbitClientInterface::class);
+        $this->rabbitClient = $rabbitClient;
+
+        /** @var CascadeConsumer $consumer */
+        $consumer = IoCResolverService::getClass(CascadeConsumer::class);
+        $this->consumer = $consumer;
     }
 
     /**
