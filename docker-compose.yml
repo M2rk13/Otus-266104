@@ -13,3 +13,49 @@ services:
     ports:
       - 15672:15672
       - 5672:5672
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+  mysql:
+    image: mysql:8
+    hostname: rabbitmq
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=test
+      - MYSQL_USER=docker
+      - MYSQL_PASSWORD=docker
+    volumes:
+        - ./conf/init-db-1.sh:/bin/init-db-1.sh
+        - ./conf/init-db-2.sh:/bin/init-db-2.sh
+        - ./conf/init-db-3.sh:/bin/init-db-3.sh
+    ports:
+      - 3306:3306
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 10
+  webserver:
+    build:
+      context: ./bin/php
+    container_name: 'php'
+    restart: 'always'
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    links:
+      - "mysql:mysql.proj"
+      - "rabbitmq:rabbitmq.proj"
+    volumes:
+      - ./:/app
+    environment:
+      PMA_PORT: 8080
+      MYSQL_ROOT_PASSWORD: password
+      IS_DOCKER: 1

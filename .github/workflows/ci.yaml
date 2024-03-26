@@ -10,11 +10,16 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  phpunit:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.2
 
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
@@ -28,8 +33,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
 
+    - name: Run Docker
+      run: docker-compose up -d
+
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      run: composer install --prefer-dist
+
+    - name: Prepare project
+      run: sh ./init-project.sh
 
     - name: Run tests
       run: |
